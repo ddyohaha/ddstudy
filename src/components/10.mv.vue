@@ -1,5 +1,5 @@
 <template>
-  <div class="mv-container">
+  <div v-if="isShow" class="mv-container">
     <div class="mv-wrap">
       <h3 class="title">mv详情</h3>
       <!-- mv -->
@@ -21,7 +21,7 @@
           <span class="data">发布 : {{ mvInfo.publishTime }}</span>
           <span class="number">播放 :{{ mvInfo.playCount }}次</span>
           <p class="desc">
-            死生契阔，“我的愿，并非执手相看泪满眼”，名为真情的传奇虽限于此，但沉吟唱罢的歌词也给故事结局写上了不一样的可能，一曲、一梦，徒叹云兮云不知。下辈子，还要在一起~{{
+            {{
               mvInfo.desc
             }}
           </p>
@@ -78,6 +78,7 @@ export default {
       mvInfo: {},
       // ?头像
       icon: "",
+      isShow:false
     };
   },
   created() {
@@ -128,9 +129,10 @@ export default {
           mvid: this.$route.query.q,
         },
       }).then((res) => {
-        // console.log(res);
+        console.log('mvInfo',res);
         // 保存相关mv
         this.mvInfo = res.data.data;
+        this.isShow = true
         // 获取歌手信息
         axios({
           url: "http://47.96.91.10:3000/artists",
@@ -153,6 +155,7 @@ export default {
     },
   },
 };
+
 </script>
 
 <style>
@@ -234,4 +237,5 @@ h3 {
   font-size: 10px;
   color: rgb(110, 110, 110);
 }
+
 </style>

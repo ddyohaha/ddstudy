@@ -1,5 +1,5 @@
 <template>
-  <div class="songs-container">
+  <div v-if="isShow" class="songs-container">
     <!-- <div class="tab-bar">
 
       <span class="item" @click="tag=0" :class="{active:tag==0}">全部</span>
@@ -19,8 +19,8 @@
         <th>时长</th>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in lists" :key="index" class="el-table__row">
-          <td>{{index + 1}}</td>
+        <tr v-for="(item, index) in pageData" :key="index" class="el-table__row">
+          <td>{{ (currentPage-1)*10 + index + 1}}</td>
           <td>
             <div class="img-wrap">
               <img :src="item.album.picUrl" alt="">
@@ -42,6 +42,18 @@
         </tr>
       </tbody>
     </table>
+    <div>
+      <el-pagination
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+    background
+    layout="prev, pager, next"
+    :total="pageTotal"
+    :current-page="currentPage"
+    :page-size="pageSize"
+    >
+    </el-pagination>
+    </div>
     <!-- 分页器 
       total 总条数
       current-page 当前页
@@ -69,7 +81,16 @@ export default {
     return {
       //歌曲列表
       lists: [],
-      tag: '0'
+      tag: '0',
+      // 分页的数据
+      pageData: [],
+      // 总数据量 默认为 0
+      pageTotal: 0,
+      // 当前页 默认是第一页
+      currentPage: 1,
+      // 每页大小 默认每页10条数据
+      pageSize: 10,
+      isShow:false
     };
   },
   created() {
@@ -83,6 +104,11 @@ export default {
       }).then((res) => {
         console.log(res);
         this.lists = res.data.data;
+        this.pageTotal = this.lists.length;
+        this.pageData = this.queryByPage();
+        this.isShow = true
+        console.log('this.lists',this.lists)
+        
         //处理时长 毫秒 转为 分秒
         for(let i = 0; i < this.lists.length; i++){
           let duration = this.lists[i].duration
@@ -115,6 +141,28 @@ export default {
         // 设置给父组件的播放地址
         this.$parent.musicUrl = url;
       })
+    },
+     // 改变每页大小的回调
+     handleSizeChange (val) {
+      this.pageSize = val
+
+      this.pageData = this.queryByPage()
+    },
+     // 改变当前页的回调
+     handleCurrentChange (val) {
+      this.currentPage = val
+
+      this.pageData = this.queryByPage()
+    },
+
+    // 实现分页的方法
+    queryByPage () {
+      // 起始位置 = (当前页 - 1) x 每页的大小
+      const start = (this.currentPage - 1) * this.pageSize
+      // 结束位置 = 当前页 x 每页的大小
+      const end = this.currentPage * this.pageSize
+
+      return this.lists.slice(start, end)
     }
   }
 }
@@ -191,4 +239,20 @@ table tbody .song-wrap{
   margin-left: -12px;
   margin-top: 12px;
 }
+.el-pagination {
+    white-space: nowrap;
+    padding: 4% 0 0 0;
+    color: #303133;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+  
+}
+.el-pagination.is-background .el-pager li:not(.disabled):hover{
+  color: #bfa2da;
+}
+ .el-pagination.is-background .el-pager li:not(.disabled).active{
+      background-color: #422b57;
+      color: #bfa2da;
+ } 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="playlists">
+  <div v-if="isShow" class="playlists">
     <div class="playlists-container">
       <!-- 头部 -->
       <div class="top-card">
@@ -89,7 +89,8 @@ export default {
       //歌单列表
       list: [],
       //当前选择的数据
-      tag: "全部"
+      tag: "全部",
+      isShow:false
      };
   },
   //侦听器
@@ -144,9 +145,10 @@ export default {
     }).then(res=>{
       // console.log(res)
       //保存总条数
-      this.total = res.data.total
+      this.total = res.data.total;
       //保存数据
-      this.list = res.data.playlists
+      this.list = res.data.playlists;
+      this.isShow = true
     })
     },
     //页码改变事件
@@ -172,7 +174,6 @@ export default {
    margin: auto; */
    border-radius: 5px;
    float: left;
-   height: 170px;
    width: 930px;
    background-color: rgb(35, 23, 77);
    margin-right: 20px;
@@ -210,10 +211,15 @@ export default {
    color: #fff;
  }
  .playlists-container .top-card .content-wrap .info {
-   margin-top: 6px;
+   margin-top: 16px;
    line-height: 15px;
    font-size: 8px;
    color: #ccc;
+   overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
  }
  .playlists-container .top-card .icon-wrap img{
    width: 140px;
@@ -238,15 +244,12 @@ export default {
 }
 .recommendlist {
   display: block;
-  padding-bottom: 830px;
   }
 .recommendlist .items .item {
-  /* position: relative; */
-  float: left;
-  width: 200px;
+  position: relative;
+  width: 21%;
   height: 200px;
   margin-top: 20px;
-  margin-right: 25px;
   margin-bottom: 40px;
   font-size: 12px;
   font-weight: 500;
@@ -262,7 +265,6 @@ export default {
   white-space: nowrap;
 }
 .recommendlist .items .item .img-wrap {
-  margin-top: 20px;
   position: relative;
   vertical-align: top;
   overflow: hidden;
@@ -279,9 +281,9 @@ export default {
 }
 .recommendlist .items .item .num-wrap{
   position: absolute;
-  width: 200px;
+  width: 100%;
   height: 25px;
-  margin-top: -204px;
+  top: 0;
   padding-top: 5px;
   color: #fff;
   /* background-color: black;
@@ -310,12 +312,18 @@ export default {
 }
 .playlists .tab-container .tab-bar span{
   margin-right: 5px;
+  cursor:pointer;
 }
 .active{
   color: rgb(48, 10, 70);
 }
  .el-pagination {
-  margin-left: 210px;
+    white-space: nowrap;
+    padding: 4% 0 0 0;
+    color: #303133;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
   
 }
 .el-pagination.is-background .el-pager li:not(.disabled):hover{
@@ -324,5 +332,6 @@ export default {
  .el-pagination.is-background .el-pager li:not(.disabled).active{
       background-color: #422b57;
       color: #bfa2da;
- }                  
+ } 
+         
 </style>

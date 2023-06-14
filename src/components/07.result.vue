@@ -1,11 +1,11 @@
 <template>
-  <div class="result-container">
+  <div v-if="isShow" class="result-container">
       <div class="title-wrap">
         <h2 class="title">{{$route.query.q}}</h2>
         <span class="sub-title">找到{{count}}个结果 </span>
       </div>
       <!-- tab切换 -->
-      <el-tabs v-model="activeIndex" @tab-click="handleClick" class="homeMain">
+      <el-tabs v-model="activeIndex" @tab-click="" class="homeMain">
     <el-tab-pane label="歌曲" name="songs">
        <table class="el-table playlit-table" border rules=none cellspacing=0 frame=below>
       <thead>
@@ -42,8 +42,8 @@
     </table>
     </el-tab-pane>
     <el-tab-pane label="歌单" name="lists">
-      <div class="recommendlist">
-      <div class="items">
+      <div class="result_recommendlist">
+      <div class="items" v-if="isPlaylistsShow" >
         <div class="item" v-for="(item, index) in playlists" :key="index" @click="toPlaylist(item.id)">
           <div class="img-wrap">
             <span class="iconfont icon-play"></span>
@@ -64,7 +64,7 @@
     </el-tab-pane>
     <el-tab-pane label="MV" name="mv">
       <div class="new-mvs">
-        <div class="items">
+        <div class="items" v-if="isMvsShow">
           <div class="item" v-for="(item, index) in mv" :key="index" @click="toMV(item.id)">
             <div class="img-wrap">
               <img :src="item.cover" alt="">
@@ -112,7 +112,11 @@ export default {
             playlists: [],
             // 保存mv的字段
             mv:[],
-            count: 0
+            count: 0,
+            isShow:false,
+            isPlaylistsShow:false,
+            isMvsShow:false,
+            
         }
     },
     // 生命周期钩子 created
@@ -137,7 +141,8 @@ export default {
       }
     }).then( res => {
       console.log(res);
-      this.songList = res.data.result.songs
+      this.songList = res.data.result.songs;
+      this.isShow = true;
       //处理时长 毫秒 转为 分秒
         for(let i = 0; i < this.songList.length; i++){
           let dt = this.songList[i].dt
@@ -222,12 +227,16 @@ export default {
       }else if(type == 1000){
         this.playlists = res.data.result.playlists;
         //总数
-        this.count = res.data.result.playlistCount
+        this.count = res.data.result.playlistCount;
+
+        this.isPlaylistsShow = true;
 
       }else {
         this.mv = res.data.result.mvs;
         //总数
-        this.count = res.data.result.mvCount
+        this.count = res.data.result.mvCount;
+
+        this.isMvsShow = true;
         //处理时间
         for(let i = 0; i < this.mv.length; i++){
           let min = parseInt(this.mv[i].duration/1000/60);
@@ -269,6 +278,7 @@ export default {
         let url = res.data.data[0].url;
         // 设置给父组件的播放地址
         this.$parent.musicUrl = url;
+        
       })
     }
   }
@@ -377,23 +387,21 @@ table tbody .song-wrap{
   margin-top: 12px;
   }
 /* 歌单 */
-.recommendlist {
+.result_recommendlist {
   display: block;
-  padding-bottom: 830px;
+  padding-bottom: 100px;
   }
-.recommendlist .items .item {
-  /* position: relative; */
-  float: left;
-  width: 165px;
+.result_recommendlist .items .item {
+  position: relative;
+  width: 17%;
   height: 165px;
   margin-top: 20px;
-  margin-right: 25px;
   margin-bottom: 40px;
   font-size: 12px;
   font-weight: 500;
 }
 
-.recommendlist .items .item .name {
+.result_recommendlist .items .item .name {
   margin-top: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -402,8 +410,7 @@ table tbody .song-wrap{
   -moz-text-overflow: ellipsis;
   white-space: nowrap;
 }
-.recommendlist .items .item .img-wrap {
-  margin-top: 20px;
+.result_recommendlist .items .item .img-wrap {
   position: relative;
   vertical-align: top;
   overflow: hidden;
@@ -413,16 +420,16 @@ table tbody .song-wrap{
   -moz-text-overflow: ellipsis;
   white-space: nowrap;
 }
-.recommendlist .items .item .img-wrap img {
+.result_recommendlist .items .item .img-wrap img {
   border-radius: 5px;
   width: 100%;
   height: 100%;
 }
-.recommendlist .items .item .num-wrap{
+.result_recommendlist .items .item .num-wrap{
   position: absolute;
-  width: 165px;
+  width: 100%;
   height: 25px;
-  margin-top: -169px;
+  top: 0;
   padding-top: 5px;
   color: #fff;
   /* background-color: black;
@@ -430,7 +437,7 @@ table tbody .song-wrap{
   background: rgba(0, 0, 0, 0.4);
   border-radius: 5px 5px 0 0;
 }
-.recommendlist .items .item .el-icon-caret-right{
+.result_recommendlist .items .item .el-icon-caret-right{
   position: absolute;
   margin-top: 1px;
   margin-right: 5px;
@@ -438,7 +445,7 @@ table tbody .song-wrap{
   transform: scale(1.4,1);
 }
 
-.recommendlist .items .item .num-wrap .num{
+.result_recommendlist .items .item .num-wrap .num{
   margin-left: 15px;
 }
 .new-mvs {
@@ -447,13 +454,16 @@ table tbody .song-wrap{
   font-size: 12px;
   margin-top: 20px;
 }
-.new-mvs .items .item {
+.result-container .new-mvs {
+  margin-bottom: 100px;
+}
+.result-container .new-mvs .items .item {
   /* float: left; */
   display: flex;
-  float: left;
-  width: 220px;
-  height: 220px;
+  width: 20%;
+  height: auto;
   margin-right: 15px;
+  margin-bottom: 76px;
 }
 .new-mvs .items .item .duration{
   float: left;

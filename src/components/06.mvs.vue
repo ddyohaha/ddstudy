@@ -1,5 +1,5 @@
 <template>
-  <div class="mvs-container">
+  <div v-if="isShow" class="mvs-container">
     
     <div class="filter-wrap">
       <div class="section-wrap">
@@ -96,7 +96,8 @@ export default {
       // 排序
       order: '上升最快',
       //查询的结果
-      list: []
+      list: [],
+      isShow:false
     }
   },
   //侦听器
@@ -147,13 +148,13 @@ export default {
       }
     }).then( res => {
       console.log(res);
-      this.list = res.data.data
+      this.list = res.data.data;
       //保存总条数
       // 接口问题 投count 就赋值
       if(res.data.count){
         this.total = res.data.count
       }
-      
+      this.isShow = true;
     })
     },
 
@@ -188,8 +189,8 @@ export default {
   margin: 20px 15px ;
 }
 .mvs-container .filter-wrap .tabs-wrap .title{
-  
   padding: 2px 10px;
+  cursor: pointer;
 }
 .mvs-container .filter-wrap .tabs-wrap .active {
   /* padding: 0 20px; */
@@ -204,12 +205,10 @@ export default {
   margin-top: 20px;
 }
 .new-mvs .items .item {
-  /* float: left; */
-  display: flex;
-  float: left;
-  width: 230px;
+
+  width: 21%;
   height: 240px;
-  margin-right: 10px;
+
 }
 .new-mvs .items .item .img-wrap img {
   width: 100%;
@@ -239,9 +238,7 @@ export default {
   transform: scale(1.4,1);
 }
 .new-mvs .items .item .info-wrap{
-  display: block;
-  position: absolute;
-  margin-top: 170px;
+
 }
 .new-mvs .items .item .info-wrap .name {
   width: 230px;
@@ -257,11 +254,10 @@ export default {
   color: rgb(85, 85, 85);
 }
 
-
  .el-pagination {
-  position: absolute;
-  margin-top: 730px ;
-  margin-left: 250px;
+  padding: 0;
+  display: flex;
+    justify-content: center;
 }
 .el-pagination.is-background .el-pager li:not(.disabled):hover{
   color: #bfa2da;

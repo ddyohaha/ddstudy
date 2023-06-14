@@ -1,5 +1,5 @@
 <template>
-  <div class="discovery">
+  <div v-if="isShow" class="discovery">
     <!-- 轮播图 -->
     <el-carousel :interval="4000" type="card" height="200px">
       <!-- 循环获取到的接口数据 -->
@@ -93,7 +93,8 @@ export default {
       //推荐音乐
       songs: [],
       //推荐mv
-      mvs: []
+      mvs: [],
+      isShow:false
     };
   },
   created() {
@@ -105,6 +106,7 @@ export default {
     }).then((res) => {
       // console.log(res);
       this.banners = res.data.banners;
+      this.isShow = true
     }),
     //推荐歌单
       axios({
@@ -114,6 +116,7 @@ export default {
       }).then((res) => {
         // console.log(res);
         this.list = res.data.playlists;
+        this.isShow = true
       }),
       //最新音乐
       axios({
@@ -122,6 +125,7 @@ export default {
         // params:{}
       }).then((res) => {
         this.songs = res.data.result;
+        this.isShow = true
         // console.log(res);
       }),
       //最新mv
@@ -130,7 +134,8 @@ export default {
         method: "get",
         // params:{}
       }).then((res) => {
-        this.mvs = res.data.result
+        this.mvs = res.data.result;
+        this.isShow = true
       })
       ;
 
@@ -157,7 +162,7 @@ export default {
         console.log(res);
         // let url = res;
         // console.log(this.$parent.musicUrl);
-        
+       
         let url = res.data.data[0].url;
         // 设置给父组件的播放地址
         this.$parent.musicUrl = url;
@@ -168,6 +173,9 @@ export default {
 </script>
 
 <style>
+.main{
+  padding: 3% 0;
+}
 * {
   outline: none;
   box-sizing: border-box;
@@ -185,7 +193,6 @@ h3 {
   text-align: center;
   /* position: relative; */
   margin-left: 20px;
-  margin-top: 50px;
 }
 .el-carousel-item {
   /* position: absolute; */
@@ -203,12 +210,10 @@ h3 {
   margin-left: 25px;
 }
 .recommend .items .item {
-  /* position: relative; */
-  float: left;
-  width: 175px;
-  height: 175px;
-  margin-right: 20px;
-  margin-bottom: 40px;
+  width: 19%;
+  height: 100%;
+  margin-right: 1%;
+  margin-bottom: 5%;
   font-size: 12px;
   font-weight: 500;
 }
@@ -249,7 +254,7 @@ h3 {
 }
 .news .items .item {
   float: left;
-  width: 400px;
+  width: 41%;
   height: 90px;
   margin-right: 68px;
   margin-bottom: 20px;
@@ -288,33 +293,32 @@ h3 {
   position: absolute;
 
 } */
+.mvs .items{
+      justify-content: flex-start;
+}
 .mvs .items .item {
-  float: left;
-  width: 230px;
-  margin-right: 10px;
+  width: 24%;
+  margin-right: 1%;
 }
 .mvs .items .item .img-wrap img {
-  width: 230px;
-  height: 165px;
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
 }
 .mvs .items .item:last-child{
   margin-right: 0;
 }
 .mvs .items .item .img-wrap .el-icon-video-play{
-
   position: absolute;
-  margin-left: -135px;
-  margin-top: 55px;
+  margin-left: -10%;
   font-size: 50px;
   color: #fff;
+  margin-top: 3%;
 }
 .mvs .items .item .img-wrap .num-wrap{
   display: flex;
   position: absolute;
-  
-  margin-top: -165px;
-  margin-left: 178px;
+  margin-top: -9%;
   color: #fff;
 }
 .mvs .items .item .img-wrap .num-wrap .el-icon-caret-right{

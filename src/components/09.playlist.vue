@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-details">
+  <div v-if="isShow" class="playlist-details ">
       <div class="top-wrap">
           <div class="img-wrap">
               <img :src="playlist.coverImgUrl" alt="">
@@ -11,7 +11,7 @@
               </div>
               
               <div class="author-wrap">
-                  <img class="avatar" :src="playlist.creator.avatarUrl" alt="">
+                  <img class="avatar" :src="avatarUrl" alt="">
                   <div class="name-time"> 
                     <span class="name">{{playlist.creator.nickname}}</span>
                     <span class="time">{{playlist.createTime}} 创建</span> 
@@ -35,7 +35,7 @@
           </div>
       </div>
 <!-- tab切换 -->
-      <el-tabs v-model="activeIndex" @tab-click="handleClick" class="homeMain">
+      <el-tabs v-model="activeIndex" @tab-click="" class="homeMain">
     <el-tab-pane label="歌曲" name="songs">
       <table class="el-table playlit-table" border rules=none cellspacing=0 frame=below>
       <thead>
@@ -88,7 +88,9 @@ export default {
             // 页码
             page: 1,
             // 歌单详情数据
-            playlist: {}
+            playlist: {},
+            avatarUrl: '',
+            isShow:false
         };
     },
      created(){
@@ -99,21 +101,24 @@ export default {
                 id:this.$route.query.q
             }
         }).then(res => {
-            console.log(res);
-            this.playlist = res.data.playlist
-        //处理时长 毫秒 转为 分秒
-        // for(let i = 0; i < this.playlist.tracks[i].length; i++){
-        //   let dt = this.playlist.tracks[i].dt
-        //   let min = parseInt( dt / 1000 / 60);
-        //   if(min < 10){
-        //     min = '0' + min
-        //   }
-        //   let sec = parseInt((dt / 1000 ) % 60)
-        //   if(sec < 10){
-        //     sec = '0' + sec
-        //   }
-        //   this.playlist.tracks[i].dt = `${min}:${sec}`
-        // }
+            console.log( res);
+            this.playlist = res.data.playlist;
+            this.avatarUrl = res.data.playlist.creator.avatarUrl;
+            console.log('this.playlist',  this.playlist )
+            this.isShow = true
+        // 处理时长 毫秒 转为 分秒
+        for(let i = 0; i < this.playlist.tracks.length; i++){
+          let dt = this.playlist.tracks[i].dt
+          let min = parseInt( dt / 1000 / 60);
+          if(min < 10){
+            min = '0' + min
+          }
+          let sec = parseInt((dt / 1000 ) % 60)
+          if(sec < 10){
+            sec = '0' + sec
+          }
+          this.playlist.tracks[i].dt = `${min}:${sec}`
+        }
         })
     },
     methods: {
@@ -203,13 +208,22 @@ export default {
     color: #fff;
   }
   .playlist-details .top-wrap .info-wrap .tab-wrap {
-      display: flex
+      display: flex;
+      width: 100%;
   }
   .playlist-details .top-wrap .info-wrap .tab-wrap ul,.desc {
       display: flex;
       font-size: 13px;
       line-height: 24px;
+      width: 93%;
   } 
+  .playlist-details .top-wrap .info-wrap .tab-wrap .desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
   .playlist-details tbody .img-wrap .el-icon-video-play{
   position: absolute;
   font-size: 28px;
@@ -303,4 +317,5 @@ export default {
   margin-left: -12px;
   margin-top: 12px;
   }
+   .tab-wrap .title{width:7%;}        
 </style>

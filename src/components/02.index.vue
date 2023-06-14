@@ -28,7 +28,7 @@
         </div> 
 
         <!-- 播放标签 -->
-        <div class="player">
+        <div class="player" id="player">
             <audio :src='musicUrl' controls ></audio>
         </div>
     </div>
@@ -42,17 +42,18 @@ export default {
     name: 'index',
     data() {
         return{
-            musicUrl:"https://music.163.com/song/media/outer/url?id=1926450518.mp3"
+            musicUrl:"https://music.163.com/song/media/outer/url?id=1926450518.mp3",
+           
         }
     },
     // 页面创建钩子函数中添加事件监听
    created() {
-     this.listenerFunction()
+    //  this.listenerFunction()
    },
    methods: {
     handleScroll () {
-    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-    var offsetTop = document.querySelector('#player').offsetTop
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+    var offsetTop = document.querySelector('#player').offsetTop;
     if (scrollTop > offsetTop) {
         this.searchBarFixed = true
     } else {
@@ -136,4 +137,10 @@ export default {
 	    border-top: 1px solid #eee;
 	    width: calc(100% - 248px);
 	}
+    .items{
+        display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    }
+    
 </style>
